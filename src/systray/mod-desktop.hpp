@@ -13,8 +13,10 @@
 #include <QtCore/QFile>
 #include <QtCore/QDateTime>
 #include <QtCore/QTimer>
+#include <QtWidgets/QBoxLayout>
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QMenu>
+#include <QtWidgets/QPushButton>
 #include <QtWidgets/QSystemTrayIcon>
 
 #ifdef Q_OS_LINUX
@@ -131,6 +133,10 @@ class AppWindow : public QMainWindow
     bool successfullyStarted = false;
     int timerId = 0;
 
+    // mod-hw-emulator: the command line that starts the emulated controller, from MOD_HW_EMULATOR
+    QString emulatorCommand;
+    bool restartWhenStopped = false;
+
    #ifdef Q_OS_WIN
     HANDLE openEvent = nullptr;
    #endif
@@ -204,6 +210,10 @@ public:
        #endif
         connect(systray, &QSystemTrayIcon::messageClicked, this, &AppWindow::messageClicked);
         connect(systray, &QSystemTrayIcon::activated, this, &AppWindow::iconActivated);
+
+        emulatorCommand = qEnvironmentVariable("MOD_HW_EMULATOR");
+        if (! emulatorCommand.isEmpty())
+            setupEmulator();
 
         fillInDeviceList();
         loadSettings();
@@ -656,7 +666,10 @@ private:
     // persistent copy of what the launcher starts and what jackd/mod-host print, to diagnose without a debug run
     static void appendLauncherLog(const QString& text)
     {
-        const QString dir(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + "/MOD Desktop");
+        // the data folder the launcher set up (Documents/MOD Desktop unless MOD_DATA_DIR was given)
+        QString dir(qEnvironmentVariable("MOD_DATA_DIR"));
+        if (dir.isEmpty())
+            dir = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + "/MOD Desktop";
         QDir().mkpath(dir);
         QFile f(dir + "/launcher.log");
         if (f.open(QIODevice::Append | QIODevice::Text))
@@ -1024,6 +1037,57 @@ private slots:
         stopHostIfNeeded();
     }
 
+    // A button and a menu entry next to the user files, only with MOD_HW_EMULATOR set
+    void setupEmulator()
+    {
+        QPushButton* const button = new QPushButton(tr("Open Emulator"), this);
+        connect(button, &QPushButton::clicked, this, &AppWindow::openEmulator);
+
+        for (QBoxLayout* const layout : findChildren<QBoxLayout*>())
+        {
+            const int index = layout->indexOf(ui.b_openuserfiles);
+            if (index >= 0)
+            {
+                layout->insertWidget(index + 1, button);
+                break;
+            }
+        }
+
+        QAction* const action = new QAction(tr("Open &Emulator"), this);
+        connect(action, &QAction::triggered, this, &AppWindow::openEmulator);
+        sysmenu->insertAction(quitAction, action);
+        sysmenu->insertSeparator(quitAction);
+    }
+
+    void openEmulator()
+    {
+        printf("----------- %s %d\n", __FUNCTION__, __LINE__);
+
+        if (! QProcess::startDetached(emulatorCommand))
+        {
+            showErrorMessage(tr("Could not start the emulator: %1").arg(emulatorCommand));
+            return;
+        }
+
+        // mod-ui connects to the controller when it starts: running, it starts again
+        if (processUI.state() != QProcess::NotRunning || processHost.state() != QProcess::NotRunning)
+        {
+            restartWhenStopped = true;
+            stop();
+        }
+    }
+
+    void restartIfAsked()
+    {
+        if (! restartWhenStopped)
+            return;
+        if (processUI.state() != QProcess::NotRunning || processHost.state() != QProcess::NotRunning)
+            return;
+
+        restartWhenStopped = false;
+        QTimer::singleShot(1000, this, &AppWindow::start);
+    }
+
     void openGui() const
     {
         printf("----------- %s %d\n", __FUNCTION__, __LINE__);
@@ -1148,6 +1212,7 @@ private slots:
         startingHost = stoppingHost = false;
         stopUIIfNeeded();
         setStopped();
+        restartIfAsked();
     }
 
     void uiFinished(int exitCode, QProcess::ExitStatus exitStatus)
@@ -1155,6 +1220,7 @@ private slots:
         startingUI = stoppingUI = false;
         stopHostIfNeeded();
         setStopped();
+        restartIfAsked();
     }
 
     void hostReadStdOut()

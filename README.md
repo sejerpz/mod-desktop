@@ -1,5 +1,9 @@
 # MOD Desktop
 
+> **This fork** (branch `devel`) builds **alabs-mod-desktop**, MOD Desktop with an emulated MOD controller
+> ([mod-hw-emulator](https://github.com/sejerpz/mod-hw-emulator)) for developing HMI features: see
+> [utils/alabs/README.md](utils/alabs/README.md). It is not an official MOD Audio build.
+
 **MOD Audio is on the desktop!**
 
 This is the source code repository for MOD Desktop, a little tool by [MOD Audio](https://mod.audio/) that combines all the goodies from MOD for the desktop platform packaged in a convenient installer.

@@ -684,7 +684,7 @@ src/mod-ui/utils/libmod_utils$(SO_EXT): $(BOOTSTRAP_FILES) src/mod-ui/utils/util
 # ---------------------------------------------------------------------------------------------------------------------
 
 src/mod-host/mod-host.so: src/mod-host/src/*.c src/mod-host/src/*.h src/mod-host/src/monitor/*.c src/mod-host/src/monitor/*.h $(BOOTSTRAP_FILES)
-	./utils/run.sh $(PAWPAW_TARGET) $(MAKE) MOD_DESKTOP=1 SKIP_READLINE=1 SKIP_FFTW335=1 -C src/mod-host
+	./utils/run.sh $(PAWPAW_TARGET) $(MAKE) MOD_DESKTOP=1 MOD_HMI_EMULATOR=1 $(if $(filter true,$(WINDOWS)),WINDOWS=true) SKIP_READLINE=1 SKIP_FFTW335=1 -C src/mod-host
 
 # ---------------------------------------------------------------------------------------------------------------------
 

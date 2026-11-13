@@ -112,24 +112,40 @@ void initEvironment()
    #endif
 
     // get and set directory to our documents and settings, under "user documents"; also make sure it exists
+    // (a MOD_DATA_DIR already set is kept: a portable copy has its data next to it)
    #ifdef _WIN32
     WCHAR dataDir[MAX_PATH] = {};
-    SHGetSpecialFolderPathW(nullptr, dataDir, CSIDL_MYDOCUMENTS, false);
+    const DWORD presetLen = GetEnvironmentVariableW(L"MOD_DATA_DIR", dataDir, MAX_PATH);
 
-    _wmkdir(dataDir);
-    std::wcsncat(dataDir, L"\\MOD Desktop", MAX_PATH - 1);
+    if (presetLen == 0 || presetLen >= MAX_PATH)
+    {
+        std::memset(dataDir, 0, sizeof(dataDir));
+        SHGetSpecialFolderPathW(nullptr, dataDir, CSIDL_MYDOCUMENTS, false);
+
+        _wmkdir(dataDir);
+        std::wcsncat(dataDir, L"\\MOD Desktop", MAX_PATH - 1);
+    }
     _wmkdir(dataDir);
 
     SetEnvironmentVariableW(L"MOD_DATA_DIR", dataDir);
    #else
     char dataDir[PATH_MAX] = {};
 
-    // NOTE a generic implementation is a bit complex, let Qt do it for us this time
-    const QByteArray docsDir(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation).toUtf8());
-    std::strncpy(dataDir, docsDir.constData(), PATH_MAX - 1);
+    const char* const preset = std::getenv("MOD_DATA_DIR");
 
-    mkdir(dataDir, 0777);
-    std::strncat(dataDir, "/MOD Desktop", PATH_MAX - 1);
+    if (preset != nullptr && *preset != '\0')
+    {
+        std::strncpy(dataDir, preset, PATH_MAX - 1);
+    }
+    else
+    {
+        // NOTE a generic implementation is a bit complex, let Qt do it for us this time
+        const QByteArray docsDir(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation).toUtf8());
+        std::strncpy(dataDir, docsDir.constData(), PATH_MAX - 1);
+
+        mkdir(dataDir, 0777);
+        std::strncat(dataDir, "/MOD Desktop", PATH_MAX - 1);
+    }
     mkdir(dataDir, 0777);
 
     setenv("MOD_DATA_DIR", dataDir, 1);

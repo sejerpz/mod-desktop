@@ -3,7 +3,8 @@
 	url = https://github.com/mod-audio/wineasio.git
 [submodule "src/mod-host"]
 	path = src/mod-host
-	url = https://github.com/mod-audio/mod-host.git
+	url = https://github.com/sejerpz/mod-host.git
+	branch = devel
 [submodule "src/mod-midi-merger"]
 	path = src/mod-midi-merger
 	url = https://github.com/mod-audio/mod-midi-merger.git
@@ -20,3 +21,8 @@
 [submodule "src/DPF"]
 	path = src/DPF
 	url = https://github.com/mod-audio/DPF.git
+[submodule "src/mod-hw-emulator"]
+	path = src/mod-hw-emulator
+	url = https://github.com/sejerpz/mod-hw-emulator.git
+	branch = main
+	shallow = true

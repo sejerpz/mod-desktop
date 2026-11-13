@@ -13,7 +13,7 @@
 [submodule "src/mod-ui"]
 	path = src/mod-ui
 	url = https://github.com/sejerpz/mod-ui.git
-	branch = feature/mod-hw-emulator
+	branch = devel
 [submodule "src/PawPaw"]
 	path = src/PawPaw
 	url = https://github.com/mod-audio/PawPaw.git

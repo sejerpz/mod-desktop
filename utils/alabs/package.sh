@@ -162,7 +162,10 @@ if [ ! -d "$MD/src/alabs-hmi-widgets/examples" ]; then
     echo "no alabs-hmi-widgets in src: git submodule update --init src/alabs-hmi-widgets" >&2
     exit 1
 fi
-$RUN "$MD/utils/alabs/build-hmi-widgets.sh" $TARGET "$MD/src/alabs-hmi-widgets" "$LV2_DIR"
+# built apart and then copied: run.sh splits its arguments, and the macOS bundle has a space in its name
+$RUN "$MD/utils/alabs/build-hmi-widgets.sh" $TARGET "$MD/src/alabs-hmi-widgets" "$STAGE/hmi-widgets"
+mkdir -p "$LV2_DIR"
+cp -R "$STAGE"/hmi-widgets/*.lv2 "$LV2_DIR/"
 
 # the device's descriptor with its drop-ins (the HMI widget areas); MOD Desktop's keeps what tells the desktop
 # apart (name, binaries)

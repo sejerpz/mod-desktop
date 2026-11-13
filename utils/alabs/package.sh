@@ -1,8 +1,9 @@
 #!/bin/bash
 # Builds a alabs-mod-desktop package: this MOD Desktop, built with its mod-host (the HMI control of
 # mod-hw-emulator), its mod-ui (HMI widgets, the HMI line over TCP) and its launcher (the Open Emulator button), and
-# mod-hw-emulator (src/mod-hw-emulator) with the firmware of each device. It runs as it is, unpacked anywhere,
-# apart from an installed MOD Desktop: mhe-desktop starts it.
+# mod-hw-emulator (src/mod-hw-emulator) with the firmware of each device, and the example plugins of the aLabs HMI
+# widgets (src/alabs-hmi-widgets). It runs as it is, unpacked anywhere, apart from an installed MOD Desktop:
+# mhe-desktop starts it.
 #
 #   utils/alabs/package.sh TARGET [OUT]
 #
@@ -152,6 +153,17 @@ case $OS in
         ;;
 esac
 
+# the example plugins of the aLabs HMI widgets (src/alabs-hmi-widgets), next to the plugins of MOD Desktop
+case $OS in
+    macos) LV2_DIR="$APP/Contents/LV2" ;;
+    *) LV2_DIR="$PKG/mod-desktop/plugins" ;;
+esac
+if [ ! -d "$MD/src/alabs-hmi-widgets/examples" ]; then
+    echo "no alabs-hmi-widgets in src: git submodule update --init src/alabs-hmi-widgets" >&2
+    exit 1
+fi
+$RUN "$MD/utils/alabs/build-hmi-widgets.sh" $TARGET "$MD/src/alabs-hmi-widgets" "$LV2_DIR"
+
 # the device's descriptor with its drop-ins (the HMI widget areas); MOD Desktop's keeps what tells the desktop
 # apart (name, binaries)
 for d in $DEVICES; do
@@ -183,7 +195,7 @@ if [ $OS = macos ]; then
     # ad-hoc signatures: install_name_tool breaks the ones the linker made, and Apple Silicon runs no unsigned
     # code (the bundle's main program is signed out of the bundle: in it, codesign would seal the whole bundle,
     # and mod-ui's Python files next to the programs are no code it can sign)
-    find "$MACOS" "$APP/Contents/Frameworks" "$APP/Contents/PlugIns" "$PKG"/fw-*.dylib -type f \
+    find "$MACOS" "$APP/Contents/Frameworks" "$APP/Contents/PlugIns" "$PKG"/fw-*.dylib "$LV2_DIR"/hmi-widget-*.lv2 -type f \
          ! -path "$MACOS/mod-desktop" > "$STAGE/code.txt"
     while read -r f; do
         if file -b "$f" | grep -q Mach-O; then

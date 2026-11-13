@@ -26,3 +26,8 @@
 	url = https://github.com/sejerpz/mod-hw-emulator.git
 	branch = main
 	shallow = true
+[submodule "src/alabs-hmi-widgets"]
+	path = src/alabs-hmi-widgets
+	url = https://github.com/sejerpz/alabs-hmi-widgets.git
+	branch = main
+	shallow = true

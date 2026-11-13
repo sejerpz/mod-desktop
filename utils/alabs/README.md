@@ -12,6 +12,7 @@ What differs from mod-audio's `main`:
 | `src/mod-ui` | [sejerpz/mod-ui](https://github.com/sejerpz/mod-ui) `devel`: HMI widgets, the HMI line over TCP, the Device addressing tab and the Display dialog with a controller attached |
 | `src/mod-host` | [sejerpz/mod-host](https://github.com/sejerpz/mod-host) `devel`, built with `MOD_HMI_EMULATOR=1` (the HMI control, `/sys_msgs` over TCP) |
 | `src/mod-hw-emulator` | [sejerpz/mod-hw-emulator](https://github.com/sejerpz/mod-hw-emulator) `main`, with the firmwares and mod-system-control as its own submodules |
+| `src/alabs-hmi-widgets` | [sejerpz/alabs-hmi-widgets](https://github.com/sejerpz/alabs-hmi-widgets) `main`: its example plugins (`hmi-widget-draw`, `hmi-widget-meter`) are built into the package with the plugins of MOD Desktop |
 | `src/systray` | the launcher: an **Open Emulator** button and tray entry (with `MOD_HW_EMULATOR`, the command line of the emulator), and a `MOD_DATA_DIR` given to it kept |
 | `utils/alabs/` | the package script and the launchers of the package |
 | `.github/workflows/alabs.yml` | the release workflow |
@@ -59,7 +60,7 @@ named after the commit of `src/PawPaw`.
 After pushing to the forks, move the submodules and commit that:
 
 ```sh
-git submodule update --remote --depth 1 src/mod-ui src/mod-host src/mod-hw-emulator
+git submodule update --remote --depth 1 src/mod-ui src/mod-host src/mod-hw-emulator src/alabs-hmi-widgets
 git -C src/mod-hw-emulator submodule update --init --recursive --depth 1
-git commit -am "Update mod-ui, mod-host and the emulator"
+git commit -am "Update mod-ui, mod-host, the emulator and the HMI widgets"
 ```

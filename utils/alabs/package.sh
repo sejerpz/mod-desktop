@@ -230,7 +230,7 @@ esac
     echo "mod-hw-emulator, with its submodules (firmwares and mod-system-control: sejerpz, branch devel):"
     git -C "$EMU" submodule status --recursive 2> /dev/null | awk '{ printf "  %-40s %s\n", $2, $1 }'
     echo
-    echo "Not an official MOD Audio build: the Tone3000 integration has no client id and does not work."
+    echo "Not an official MOD Audio build."
     [ $OS != macos ] || echo "Not signed with a Developer ID: macOS asks before opening it the first time, see README.txt."
 } | if [ $OS = win64 ]; then sed 's/$/\r/'; else cat; fi > "$PKG/SOURCES.txt"
 

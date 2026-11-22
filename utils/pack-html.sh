@@ -139,6 +139,9 @@ cp ${ROOT}/src/mod-ui/html/img/icons/36/*.png ./img/icons/36/
 mkdir ./img/social
 cp ${ROOT}/src/mod-ui/html/img/social/*.png ./img/social/
 
+mkdir ./img/t3k-gear
+cp ${ROOT}/src/mod-ui/html/img/t3k-gear/*.svg ./img/t3k-gear/
+
 # Desktop upsell panels use their own local JPEG assets (only present on a Desktop mod-ui branch).
 if [ -d ${ROOT}/src/mod-ui/html/img/desktop-app ]; then
   mkdir ./img/desktop-app

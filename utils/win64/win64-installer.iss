@@ -123,6 +123,7 @@ Source: "..\..\build\html\img\icons\*.png"; DestDir: "{app}\html\img\icons"; Fla
 Source: "..\..\build\html\img\icons\25\*.png"; DestDir: "{app}\html\img\icons\25"; Flags: ignoreversion;
 Source: "..\..\build\html\img\icons\36\*.png"; DestDir: "{app}\html\img\icons\36"; Flags: ignoreversion;
 Source: "..\..\build\html\img\social\*.png"; DestDir: "{app}\html\img\social"; Flags: ignoreversion;
+Source: "..\..\build\html\img\t3k-gear\*.svg"; DestDir: "{app}\html\img\t3k-gear"; Flags: ignoreversion;
 Source: "..\..\build\html\include\*.html"; DestDir: "{app}\html\include"; Flags: ignoreversion;
 Source: "..\..\build\html\include\desktop-app\*.html"; DestDir: "{app}\html\include\desktop-app"; Flags: ignoreversion;
 Source: "..\..\build\html\js\*.js"; DestDir: "{app}\html\js"; Flags: ignoreversion;

@@ -98,7 +98,10 @@ MOD Desktop ships the same [mod-ui](https://github.com/mod-audio/mod-ui) as the 
   (`?v=`), in the launcher's settings dialog and in every package name, so a report can always be
   tied to a build. The launcher and the plugin compile it in; changing `VERSION` rebuilds both.
 - The Tone3000 client id is a publishable identifier passed as `MOD_TONE3000_CLIENT_ID` in the
-  environment at freeze time and baked into the frozen mod-ui; it is never committed.
+  environment at freeze time and baked into the frozen mod-ui; it is never committed. Release builds
+  take the aLabs (Starless) client id from the `MOD_TONE3000_CLIENT_ID` repository variable, which
+  Tone3000 accepts with the `http://127.0.0.1:18181` redirect; a build without it gets a placeholder
+  that Tone3000 refuses.
 
 See `CONTRIBUTING.md` in mod-ui for the branch model and how a change travels to both products.
 
